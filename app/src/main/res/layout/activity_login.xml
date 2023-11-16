@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="3sp"
+    android:background="#FFFFFF"
+    android:backgroundTint="#D2DFFF"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".LoginActivity"> <!-- Add this line -->
+    <!-- Fill the linear layout with some components-->
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:gravity="center"
+        android:text="welcome to"
+        android:textColor="#173460"
+        android:textSize="34sp" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:gravity="center"
+        android:paddingBottom="30sp"
+        android:text="JBUS"
+        android:textColor="#173460"
+        android:textSize="52sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="36dp"
+        android:background="#00F4F6FB"
+        android:fadingEdge="horizontal"
+        android:orientation="vertical">
+        android:fontFamily="sans-serif-smallcaps"
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="60sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="sans-serif-smallcaps"
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="60sp"
+            android:fontFamily="sans-serif-smallcaps"
+            android:hint="Password"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4sp"
+            android:layout_marginBottom="20sp"
+            android:gravity="left"
+            android:text="Forgot your password?"
+            android:textColor="#113EB6"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#66A7D8"
+            android:fontFamily="sans-serif-smallcaps"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:text="LOGIN"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:cornerRadius="10dp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="or"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#66A7D8"
+            android:fontFamily="sans-serif-smallcaps"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:text="REGISTER NOW"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:cornerRadius="10dp" />
+
+    </LinearLayout>
+</LinearLayout>
