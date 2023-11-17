@@ -9,29 +9,31 @@
     android:backgroundTint="#D2DFFF"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".LoginActivity"> <!-- Add this line -->
+    tools:context=".RegisterActivity"> <!-- Add this line -->
     <!-- Fill the linear layout with some components-->
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:gravity="center"
+        android:paddingBottom="10sp"
+        android:text="Register your account!"
+        android:textColor="#173460"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="cursive"
-        android:gravity="center"
-        android:text="welcome to"
-        android:textColor="#173460"
-        android:textSize="34sp" />
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:fontFamily="sans-serif-smallcaps"
         android:gravity="center"
-        android:paddingBottom="30sp"
-        android:text="JBUS"
+        android:text="Input your username, email, and password"
         android:textColor="#173460"
-        android:textSize="52sp"
-        android:textStyle="bold" />
+        android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/register_form"
@@ -42,6 +44,15 @@
         android:fadingEdge="horizontal"
         android:orientation="vertical">
         android:fontFamily="sans-serif-smallcaps"
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="60sp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-smallcaps"
+            android:hint="username"
+            android:inputType="text" />
 
         <EditText
             android:id="@+id/email"
@@ -57,38 +68,15 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="60sp"
-            android:layout_marginBottom="30sp"
             android:fontFamily="sans-serif-smallcaps"
             android:hint="Password"
             android:inputType="textPassword" />
 
         <Button
-            android:id="@+id/login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#66A7D8"
-            android:fontFamily="sans-serif-smallcaps"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:text="LOGIN"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:cornerRadius="10dp" />
-
-        <TextView
-            android:id="@+id/or"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="or"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <Button
             android:id="@+id/register_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
             android:backgroundTint="#66A7D8"
             android:fontFamily="sans-serif-smallcaps"
             android:paddingHorizontal="16dp"
