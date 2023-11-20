@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="3sp"
     android:background="#FFFFFF"
-    android:backgroundTint="#D2DFFF"
+    android:backgroundTint="#B4BDFF"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".RegisterActivity"> <!-- Add this line -->
@@ -77,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20sp"
-            android:backgroundTint="#66A7D8"
+            android:backgroundTint="#83A2FF"
             android:fontFamily="sans-serif-smallcaps"
             android:paddingHorizontal="16dp"
             android:paddingVertical="12dp"

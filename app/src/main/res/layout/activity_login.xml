@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="3sp"
     android:background="#FFFFFF"
-    android:backgroundTint="#D2DFFF"
+    android:backgroundTint="#B4BDFF"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".LoginActivity"> <!-- Add this line -->
@@ -66,7 +66,7 @@
             android:id="@+id/login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#66A7D8"
+            android:backgroundTint="#83A2FF"
             android:fontFamily="sans-serif-smallcaps"
             android:paddingHorizontal="16dp"
             android:paddingVertical="12dp"
@@ -82,6 +82,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="or"
+            android:textColor="#173460"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -89,7 +90,7 @@
             android:id="@+id/register_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#66A7D8"
+            android:backgroundTint="#83A2FF"
             android:fontFamily="sans-serif-smallcaps"
             android:paddingHorizontal="16dp"
             android:paddingVertical="12dp"
