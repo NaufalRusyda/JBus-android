@@ -18,12 +18,19 @@ public class AboutMeActivity extends AppCompatActivity {
         TextView balanceTextView = findViewById(R.id.balance);
 
         // Replace "Your Name" with your actual name
-        usernameTextView.setText("Naufal");
+        String name = "Kaufal";
+        usernameTextView.setText(name);
 
         // Replace "your_email@example.com" with your actual email address
         emailTextView.setText("naufal@mail.com");
 
         // Replace "1000" with your initial balance
         balanceTextView.setText("1000");
+
+        // Update the initial letter in the circle with the first letter of the name
+        TextView initialTextView = findViewById(R.id.initial);
+        if (name.length() > 0) {
+            initialTextView.setText(String.valueOf(name.charAt(0)).toUpperCase());
+        }
     }
 }
