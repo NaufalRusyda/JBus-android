@@ -46,7 +46,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/username"
+                android:id="@+id/bus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
@@ -69,7 +69,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/email"
+                android:id="@+id/capacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
@@ -135,6 +135,41 @@
                 android:textSize="20sp"
                 app:cornerRadius="30sp" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/renter_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Not registered" />
+
+        <TextView
+            android:id="@+id/renter_status2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Registered"
+            tools:visibility="gone" />
+
+        <Button
+            android:id="@+id/renter_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register Company" />
+
+        <Button
+            android:id="@+id/renter_button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Manage Bus"
+            tools:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

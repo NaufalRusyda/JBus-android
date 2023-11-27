@@ -44,7 +44,7 @@
         android:fontFamily="sans-serif-smallcaps"
 
         <EditText
-            android:id="@+id/email"
+            android:id="@+id/capacity"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:layout_marginTop="20dp"

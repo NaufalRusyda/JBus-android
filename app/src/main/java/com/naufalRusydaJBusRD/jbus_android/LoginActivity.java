@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         mContext = this;
         mApiService = UtilsApi.getApiService();
 
-        emailEditText = findViewById(R.id.email);
+        emailEditText = findViewById(R.id.capacity);
         passwordEditText = findViewById(R.id.password);
         loginButton = findViewById(R.id.login_button);
 

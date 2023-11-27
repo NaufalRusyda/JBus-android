@@ -9,7 +9,7 @@
     android:backgroundTint="#B4BDFF"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".RegisterActivity"> <!-- Add this line -->
+    tools:context=".RegisterRenterActivity"> <!-- Add this line -->
     <!-- Fill the linear layout with some components-->
 
     <TextView
@@ -19,7 +19,7 @@
         android:fontFamily="sans-serif-smallcaps"
         android:gravity="center"
         android:paddingBottom="10sp"
-        android:text="Register your account!"
+        android:text="Register your Company!"
         android:textColor="#173460"
         android:textSize="34sp"
         android:textStyle="bold" />
@@ -31,7 +31,7 @@
         android:layout_marginBottom="30dp"
         android:fontFamily="sans-serif-smallcaps"
         android:gravity="center"
-        android:text="Input your username, email, and password"
+        android:text="Input company name, address, and phone number"
         android:textColor="#173460"
         android:textSize="16sp" />
 
@@ -51,7 +51,7 @@
             android:layout_height="60sp"
             android:layout_marginTop="20dp"
             android:fontFamily="sans-serif-smallcaps"
-            android:hint="username"
+            android:hint="Company name"
             android:inputType="text" />
 
         <EditText
@@ -61,16 +61,16 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:fontFamily="sans-serif-smallcaps"
-            android:hint="Email"
-            android:inputType="textEmailAddress" />
+            android:hint="Address"
+            android:inputType="text" />
 
         <EditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:fontFamily="sans-serif-smallcaps"
-            android:hint="Password"
-            android:inputType="textPassword" />
+            android:hint="Phone number"
+            android:inputType="number" />
 
         <Button
             android:id="@+id/register_button"
