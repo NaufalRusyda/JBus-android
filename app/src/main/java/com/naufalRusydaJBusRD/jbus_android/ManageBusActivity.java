@@ -1,17 +1,23 @@
 package com.naufalRusydaJBusRD.jbus_android;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naufalRusydaJBusRD.jbus_android.model.Bus;
@@ -31,19 +37,19 @@ public class ManageBusActivity extends AppCompatActivity {
     private BaseApiService mApiService;
     private Context mContext;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_bus);
         // Initialize the ActionBar
         ActionBar actionBar = getSupportActionBar();
-
-        mApiService = UtilsApi.getApiService();
-
         // Set the title of the ActionBar
         if (actionBar != null) {
             actionBar.setTitle("Manage Bus");
         }
+
+        mApiService = UtilsApi.getApiService();
 
         // Initialize the ListView and adapter
         busListView = findViewById(R.id.bus_list_view);
@@ -81,26 +87,74 @@ public class ManageBusActivity extends AppCompatActivity {
         super.onResume();
         mApiService = UtilsApi.getApiService();
 
-
-        // Fetch the list of buses for the logged-in account
-        int accountId = LoginActivity.loggedAccount.id;
-        mApiService.getMyBus(accountId).enqueue(new Callback<List<Bus>>() {
-            @Override
-            public void onResponse(Call<List<Bus>> call, Response<List<Bus>> response) {
-                if (response.isSuccessful()) {
-                    // Update the adapter with the fetched data
-                    busListAdapter.clear();
-                    busListAdapter.addAll(response.body());
-                } else {
-                    Toast.makeText(ManageBusActivity.this, "Failed to fetch buses", Toast.LENGTH_SHORT).show();
+        // Check if loggedAccount is not null before making API calls
+        if (LoginActivity.loggedAccount != null) {
+            // Fetch the list of buses for the logged-in account
+            int accountId = LoginActivity.loggedAccount.id;
+            mApiService.getMyBus(accountId).enqueue(new Callback<List<Bus>>() {
+                @Override
+                public void onResponse(Call<List<Bus>> call, Response<List<Bus>> response) {
+                    if (response.isSuccessful()) {
+                        // Update the adapter with the fetched data
+                        busListAdapter.clear();
+                        busListAdapter.addAll(response.body());
+                    } else {
+                        Toast.makeText(ManageBusActivity.this, "Failed to fetch buses", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
+                @Override
+                public void onFailure(Call<List<Bus>> call, Throwable t) {
+                    Toast.makeText(ManageBusActivity.this, "Problem with the server", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    public class BusListAdapter extends ArrayAdapter<Bus> {
+
+        private Context mContext;
+
+        public BusListAdapter(Context context, List<Bus> buses) {
+            super(context, 0, buses);
+            mContext = context;
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.custom_bus_item, parent, false);
             }
 
-            @Override
-            public void onFailure(Call<List<Bus>> call, Throwable t) {
-                Toast.makeText(ManageBusActivity.this, "Problem with the server", Toast.LENGTH_SHORT).show();
-            }
-        });
+            Bus bus = getItem(position);
+
+            TextView busNameTextView = convertView.findViewById(R.id.bus_name);
+            busNameTextView.setText(bus.name);
+
+            ImageView calendarIconImageView = convertView.findViewById(R.id.calendar_icon);
+            calendarIconImageView.setTag(position); // Set a tag to identify the position
+
+            calendarIconImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Retrieve the selected bus
+                    Bus selectedBus = getItem(position);
+
+                    // Start BusScheduleActivity and pass the bus ID
+                    Intent intent = new Intent(mContext, BusScheduleActivity.class);
+                    intent.putExtra("busId", bus.id);
+                    mContext.startActivity(intent);
+                }
+            });
+
+            return convertView;
+        }
+
+
+
     }
+
+
 
 }

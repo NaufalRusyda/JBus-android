@@ -33,9 +33,9 @@ public class RegisterActivity extends AppCompatActivity {
         mContext = this;
         mApiService = UtilsApi.getApiService();
 
-        name = findViewById(R.id.bus);
-        email = findViewById(R.id.capacity);
-        password  = findViewById(R.id.password);
+        name = findViewById(R.id.register_name);
+        email = findViewById(R.id.register_email);
+        password  = findViewById(R.id.register_password);
         registerButton = findViewById(R.id.register_button);
 
         registerButton.setOnClickListener(v -> handleRegister());

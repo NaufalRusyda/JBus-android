@@ -3,7 +3,6 @@ package com.naufalRusydaJBusRD.jbus_android;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,10 +34,10 @@ public class RegisterRenterActivity extends AppCompatActivity {
         mContext = this;
         mApiService = UtilsApi.getApiService();
 
-        companyName = findViewById(R.id.bus);
-        address = findViewById(R.id.capacity);
-        phoneNumber     = findViewById(R.id.password);
-        registerButton = findViewById(R.id.register_button);
+        companyName = findViewById(R.id.aboutme_name);
+        address = findViewById(R.id.aboutme_email);
+        phoneNumber     = findViewById(R.id.register_password);
+        registerButton = findViewById(R.id.register_now);
 
         registerButton.setOnClickListener(v -> handleRegister());
     }

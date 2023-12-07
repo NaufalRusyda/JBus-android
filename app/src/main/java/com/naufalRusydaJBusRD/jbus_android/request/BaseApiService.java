@@ -5,6 +5,7 @@ import com.naufalRusydaJBusRD.jbus_android.model.BaseResponse;
 import com.naufalRusydaJBusRD.jbus_android.model.Bus;
 import com.naufalRusydaJBusRD.jbus_android.model.BusType;
 import com.naufalRusydaJBusRD.jbus_android.model.Facility;
+import com.naufalRusydaJBusRD.jbus_android.model.Payment;
 import com.naufalRusydaJBusRD.jbus_android.model.Renter;
 import com.naufalRusydaJBusRD.jbus_android.model.Station;
 
@@ -60,4 +61,35 @@ public interface BaseApiService {
 
     @GET("bus/getMyBus")
     Call<List<Bus>> getMyBus(@Query("accountId") int accountId);
+
+    @POST("bus/addSchedule")
+    Call<BaseResponse<Bus>> addSchedule(
+            @Query("busId") int busId,
+            @Query("time") String time
+    );
+
+    @GET("bus/getAllBus")
+    Call<List<Bus>> getAllBus();
+
+    @GET("bus/{id}")
+    Call<Bus> getBusbyId(@Path("id") int id);
+
+    @POST("payment/makeBooking")
+    Call<BaseResponse<Payment>> makeBooking(
+            @Query("buyerId") int buyerId,
+            @Query("renterId") int renterId,
+            @Query("busId") int busId,
+            @Query("busSeats") List<String> busSeats,
+            @Query("departureDate") String departureDate
+    );
+
+    @POST("payment/{id}/accept")
+    Call<BaseResponse<Payment>> accept(@Path("id") int id);
+
+    @POST("payment/{id}/cancel")
+    Call<BaseResponse<Payment>> cancel(@Path("id") int id);
+
+    @GET("payment/buyer/{buyerId}")
+    Call<List<Payment>> getMyPayments(@Path("buyerId") int buyerId);
+
 }

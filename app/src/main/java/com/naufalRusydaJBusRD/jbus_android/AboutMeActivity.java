@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.naufalRusydaJBusRD.jbus_android.model.Account;
@@ -33,6 +34,11 @@ public class AboutMeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_me);
+        ActionBar actionBar = getSupportActionBar();
+        // Set the title of the ActionBar
+        if (actionBar != null) {
+            actionBar.setTitle("My Account");
+        }
 
         if (LoginActivity.loggedAccount == null) {
             finish();
@@ -41,9 +47,9 @@ public class AboutMeActivity extends AppCompatActivity {
         }
 
         // Initialize components
-        TextView usernameTextView = findViewById(R.id.bus);
-        TextView emailTextView = findViewById(R.id.capacity);
-        TextView balanceTextView = findViewById(R.id.balance);
+        TextView usernameTextView = findViewById(R.id.aboutme_name);
+        TextView emailTextView = findViewById(R.id.aboutme_email);
+        TextView balanceTextView = findViewById(R.id.aboutme_balance);
 
         // Set the account data
         Account loggedAccount = LoginActivity.loggedAccount;
@@ -153,7 +159,7 @@ public class AboutMeActivity extends AppCompatActivity {
 
                 if (res.success) {
                     // Update the balance in the TextView
-                    TextView balanceTextView = findViewById(R.id.balance);
+                    TextView balanceTextView = findViewById(R.id.aboutme_balance);
                     loggedAccount.balance = newBalance;
                     balanceTextView.setText(String.valueOf(loggedAccount.balance));
 

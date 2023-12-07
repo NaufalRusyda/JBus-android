@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="3sp"
     android:background="#FFFFFF"
     android:backgroundTint="#B4BDFF"
     android:gravity="center"
@@ -46,7 +45,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/bus"
+                android:id="@+id/aboutme_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
@@ -69,7 +68,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/capacity"
+                android:id="@+id/aboutme_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
@@ -92,7 +91,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/balance"
+                android:id="@+id/aboutme_balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"

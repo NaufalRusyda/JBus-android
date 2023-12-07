@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         // Load the components to the variables
-        registerNow = findViewById(R.id.register_button);
+        registerNow = findViewById(R.id.register_now);
         loginButton = findViewById(R.id.login_button);
 
         registerNow.setOnClickListener(v -> {
@@ -53,8 +53,8 @@ public class LoginActivity extends AppCompatActivity {
         mContext = this;
         mApiService = UtilsApi.getApiService();
 
-        emailEditText = findViewById(R.id.capacity);
-        passwordEditText = findViewById(R.id.password);
+        emailEditText = findViewById(R.id.login_email);
+        passwordEditText = findViewById(R.id.login_password);
         loginButton = findViewById(R.id.login_button);
 
         loginButton.setOnClickListener(v -> handleLogin());

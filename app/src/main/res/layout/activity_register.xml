@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="3sp"
     android:background="#FFFFFF"
     android:backgroundTint="#B4BDFF"
     android:gravity="center"
@@ -13,7 +12,6 @@
     <!-- Fill the linear layout with some components-->
 
     <TextView
-        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-smallcaps"
@@ -25,7 +23,6 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
@@ -43,10 +40,9 @@
         android:background="#00F4F6FB"
         android:fadingEdge="horizontal"
         android:orientation="vertical">
-        android:fontFamily="sans-serif-smallcaps"
 
         <EditText
-            android:id="@+id/bus"
+            android:id="@+id/register_name"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:layout_marginTop="20dp"
@@ -55,7 +51,7 @@
             android:inputType="text" />
 
         <EditText
-            android:id="@+id/capacity"
+            android:id="@+id/register_email"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:layout_marginTop="20dp"
@@ -65,7 +61,7 @@
             android:inputType="textEmailAddress" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/register_password"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:fontFamily="sans-serif-smallcaps"

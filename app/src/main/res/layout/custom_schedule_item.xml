@@ -13,19 +13,19 @@
     android:textColor="#173460" >
 
     <TextView
-        android:id="@+id/bus_name"
+        android:id="@+id/schedule_list"
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:text="Bus Name"
+        android:layout_weight="1"
+        android:text="Schedule List"
         android:textColor="#173460"
-        android:textSize="20sp" />
+        android:textSize="16dp" />
 
     <ImageView
-        android:id="@+id/calendar_icon"
+        android:id="@+id/delete_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="15dp"
         android:clickable="true"
-        android:src="@drawable/baseline_calendar_month_24" />
+        android:src="@drawable/baseline_delete_forever_24" />
 </LinearLayout>

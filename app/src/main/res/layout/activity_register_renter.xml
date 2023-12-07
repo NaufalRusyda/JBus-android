@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="3sp"
     android:background="#FFFFFF"
     android:backgroundTint="#B4BDFF"
     android:gravity="center"
@@ -46,7 +45,7 @@
         android:fontFamily="sans-serif-smallcaps"
 
         <EditText
-            android:id="@+id/bus"
+            android:id="@+id/aboutme_name"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:layout_marginTop="20dp"
@@ -55,7 +54,7 @@
             android:inputType="text" />
 
         <EditText
-            android:id="@+id/capacity"
+            android:id="@+id/aboutme_email"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:layout_marginTop="20dp"
@@ -65,7 +64,7 @@
             android:inputType="text" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/register_password"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:fontFamily="sans-serif-smallcaps"
@@ -73,7 +72,7 @@
             android:inputType="number" />
 
         <Button
-            android:id="@+id/register_button"
+            android:id="@+id/register_now"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20sp"

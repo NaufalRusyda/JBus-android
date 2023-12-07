@@ -2,7 +2,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bus_name"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="47dp"
     android:layout_centerInParent="false"
     android:layout_centerHorizontal="false"
     android:layout_centerVertical="false"

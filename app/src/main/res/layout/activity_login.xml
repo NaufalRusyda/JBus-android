@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="3sp"
     android:background="#FFFFFF"
     android:backgroundTint="#B4BDFF"
     android:gravity="center"
@@ -12,7 +11,6 @@
     tools:context=".LoginActivity"> <!-- Add this line -->
     <!-- Fill the linear layout with some components-->
     <TextView
-        android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="cursive"
@@ -22,7 +20,6 @@
         android:textSize="34sp" />
 
     <TextView
-        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-smallcaps"
@@ -41,10 +38,9 @@
         android:background="#00F4F6FB"
         android:fadingEdge="horizontal"
         android:orientation="vertical">
-        android:fontFamily="sans-serif-smallcaps"
 
         <EditText
-            android:id="@+id/capacity"
+            android:id="@+id/login_email"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:layout_marginTop="20dp"
@@ -54,7 +50,7 @@
             android:inputType="textEmailAddress" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/login_password"
             android:layout_width="match_parent"
             android:layout_height="60sp"
             android:layout_marginBottom="30sp"
@@ -77,7 +73,6 @@
             app:cornerRadius="10dp" />
 
         <TextView
-            android:id="@+id/or"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -87,7 +82,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/register_button"
+            android:id="@+id/register_now"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#83A2FF"

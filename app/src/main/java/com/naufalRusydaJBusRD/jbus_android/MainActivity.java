@@ -4,21 +4,33 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.naufalRusydaJBusRD.jbus_android.model.Bus;
+import com.naufalRusydaJBusRD.jbus_android.request.BaseApiService;
+import com.naufalRusydaJBusRD.jbus_android.request.UtilsApi;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private Button nextButton = null;
     private ListView busListView = null;
     private HorizontalScrollView pageScroll = null;
+    private BaseApiService apiService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +57,39 @@ public class MainActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.next_page);
         pageScroll = findViewById(R.id.page_number_scroll);
         busListView = findViewById(R.id.bus_list);
-        // membuat sample list
-        listBus = Bus.sampleBusList(90);
-        listSize = listBus.size();
-        // construct the footer
-        paginationFooter();
-        goToPage(currentPage);
+
+        listBus();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        apiService = UtilsApi.getApiService();
+
+        // Make the API request to get all buses
+        Call<List<Bus>> call = apiService.getAllBus();
+        call.enqueue(new Callback<List<Bus>>() {
+            @Override
+            public void onResponse(Call<List<Bus>> call, Response<List<Bus>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Handle the list of buses obtained from the API
+                    listBus = response.body();
+                } else {
+                    Toast.makeText(MainActivity.this, "Application error " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Bus>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Problem with the server", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private void buttonListener() {
         // listener untuk button prev dan button
         prevButton.setOnClickListener(v -> {
             currentPage = currentPage != 0 ? currentPage - 1 : 0;
@@ -57,6 +98,35 @@ public class MainActivity extends AppCompatActivity {
         nextButton.setOnClickListener(v -> {
             currentPage = currentPage != noOfPages - 1 ? currentPage + 1 : currentPage;
             goToPage(currentPage);
+        });
+    }
+
+    private void listBus() {
+
+        apiService = UtilsApi.getApiService();
+
+        // Make the API request to get all buses
+        Call<List<Bus>> call = apiService.getAllBus();
+        call.enqueue(new Callback<List<Bus>>() {
+            @Override
+            public void onResponse(Call<List<Bus>> call, Response<List<Bus>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Handle the list of buses obtained from the API
+                    listBus = response.body();
+                    listSize = listBus.size();
+                    paginationFooter();
+                    goToPage(currentPage);
+                    buttonListener();
+                } else {
+                    Toast.makeText(MainActivity.this, "Application error " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Bus>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Problem with the server", Toast.LENGTH_SHORT).show();
+
+            }
         });
     }
 
@@ -73,6 +143,11 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.user_button) {
             // User clicked the "User Button"
             moveActivity(this, AboutMeActivity.class);
+            return true;
+        }
+        if (id == R.id.payment_button) {
+            // User clicked the "User Button"
+            moveActivity(this, CustomerPaymentActivity.class);
             return true;
         }
         // Add other conditions for additional menu items if needed
@@ -136,4 +211,35 @@ public class MainActivity extends AppCompatActivity {
         BusArrayAdapter busArrayAdapter = new BusArrayAdapter(this, paginatedList);
         busListView.setAdapter(busArrayAdapter);
     }
+
+    public class BusArrayAdapter extends ArrayAdapter<Bus> {
+
+        public BusArrayAdapter(Context context, List<Bus> objects) {
+            super(context, 0, objects);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.bus_view, parent, false);
+            }
+
+            TextView busNameTextView = convertView.findViewById(R.id.bus_name);
+            Bus bus = getItem(position);
+            busNameTextView.setText(bus.name);
+
+            busNameTextView.setOnClickListener(v -> {
+                Bus selectedBus = getItem(position);
+                if (selectedBus != null) {
+                    // Navigate to BusDetailActivity with the selected bus ID
+                    Intent intent = new Intent(getContext(), BusDetailActivity.class);
+                    intent.putExtra("busId", selectedBus.id); // Assuming Bus class has an 'id' field
+                    getContext().startActivity(intent);
+                }
+            });
+
+            return convertView;
+        }
+    }
+
 }
