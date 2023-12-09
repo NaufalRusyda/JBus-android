@@ -11,10 +11,18 @@
     tools:context=".MainActivity"> <!-- Add this line -->
     <!-- Fill the linear layout with some components-->
 
+    <Button
+        android:id="@+id/main_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="20dp"
+        android:text="Filter Bus" />
+
     <ListView
         android:id="@+id/bus_list"
         android:layout_width="match_parent"
-        android:layout_height="580dp" />
+        android:layout_height="570dp" />
 
     <LinearLayout
         android:id="@+id/pagination_footer"

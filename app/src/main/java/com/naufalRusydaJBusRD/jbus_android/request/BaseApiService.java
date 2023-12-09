@@ -98,5 +98,11 @@ public interface BaseApiService {
     @GET("payment/buyer/{buyerId}")
     Call<List<Payment>> getMyPayments(@Path("buyerId") int buyerId);
 
+    @GET("bus/getBusByDepartureArrival")
+    Call<List<Bus>> getBusByDepartureArrival(
+            @Query("departureId") int departureId,
+            @Query("arrivalId") int arrivalId
+            );
+
 
 }

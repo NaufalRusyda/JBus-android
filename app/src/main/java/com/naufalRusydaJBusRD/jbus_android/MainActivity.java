@@ -12,31 +12,43 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.LayoutInflaterCompat;
 
 import com.naufalRusydaJBusRD.jbus_android.model.Bus;
+import com.naufalRusydaJBusRD.jbus_android.model.BusType;
+import com.naufalRusydaJBusRD.jbus_android.model.Facility;
 import com.naufalRusydaJBusRD.jbus_android.model.Station;
 import com.naufalRusydaJBusRD.jbus_android.request.BaseApiService;
 import com.naufalRusydaJBusRD.jbus_android.request.UtilsApi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+    private BusType[] busType = BusType.values();
+    private List<Station> stationList = new ArrayList<>();
+    private BaseApiService mApiService;
+    private Context mContext;
 
     private Button[] btns;
     private int currentPage = 0;
@@ -49,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView busListView = null;
     private HorizontalScrollView pageScroll = null;
     private BaseApiService apiService;
-    public Bus detailedBus;
+    private Button filterBus;
+    private int selectedDeptStationID;
+    private int selectedArrStationID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +75,120 @@ public class MainActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.next_page);
         pageScroll = findViewById(R.id.page_number_scroll);
         busListView = findViewById(R.id.bus_list);
+        filterBus = findViewById(R.id.main_filter);
+        mContext = this;
+        List<Station> stationList = new ArrayList<>();
+        filterBus.setOnClickListener(v->showDialog());
 
         listBus();
 
+    }
+
+    protected void showDialog(){
+        AlertDialog dialog = new AlertDialog.Builder(mContext).create();
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.filter_bus_setter, null);
+        Spinner departureSpinner = dialogView.findViewById(R.id.filter_departure);
+        Spinner arrivalSpinner = dialogView.findViewById(R.id.filter_arrival);
+        Button saveFilter = dialogView.findViewById(R.id.buttonSaveFilter);
+        AdapterView.OnItemSelectedListener deptOISL = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedDeptStationID = stationList.get(position).id;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        };
+
+        AdapterView.OnItemSelectedListener arrOISL = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedArrStationID = stationList.get(position).id;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        };
+
+        mApiService = UtilsApi.getApiService();
+        mContext = this;
+
+        mApiService.getAllStation().enqueue(new Callback<List<Station>>() {
+            @Override
+            public void onResponse(Call<List<Station>> call, Response<List<Station>> response) {
+                if (response.isSuccessful()) {
+                    stationList = response.body();
+
+                    // Create custom adapters
+                    ArrayAdapter deptAdapter = new ArrayAdapter(mContext, android.R.layout.simple_list_item_1, stationList);
+                    ArrayAdapter arrAdapter = new ArrayAdapter(mContext, android.R.layout.simple_list_item_1, stationList);
+
+                    // Set adapters to spinners
+                    if (departureSpinner != null && arrivalSpinner != null) {
+                        // Use your custom adapters and set them to spinners
+                        departureSpinner.setAdapter(deptAdapter);
+                        arrivalSpinner.setAdapter(arrAdapter);
+
+                        // Set the listeners
+                        departureSpinner.setOnItemSelectedListener(deptOISL);
+                        arrivalSpinner.setOnItemSelectedListener(arrOISL);
+                    } else {
+                        Toast.makeText(mContext, "Spinners not initialized properly", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Station>> call, Throwable t) {
+                Toast.makeText(mContext, "Problem with the server", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        saveFilter.setOnClickListener(t -> {
+            updateBus();
+            Toast.makeText(mContext, "Filter saved", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
+        dialog.setView(dialogView);
+        dialog.setCancelable(true);
+        dialog.show();
+    }
+    private List<String> getStationNames() {
+        List<String> stationNames = new ArrayList<>();
+        for (Station station : stationList) {
+            stationNames.add(station.stationName);
+        }
+        return stationNames;
+    }
+
+    private void updateBus() {
+        apiService = UtilsApi.getApiService();
+
+        // Make the API request to get all buses
+        Call<List<Bus>> call = apiService.getBusByDepartureArrival(selectedDeptStationID, selectedArrStationID);
+        call.enqueue(new Callback<List<Bus>>() {
+            @Override
+            public void onResponse(Call<List<Bus>> call, Response<List<Bus>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Handle the list of buses obtained from the API
+                    listBus = response.body();
+                    goToPage(currentPage);
+                    buttonListener();
+                } else {
+                    Toast.makeText(MainActivity.this, "Application error " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Bus>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Problem with the server", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     @Override
