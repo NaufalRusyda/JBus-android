@@ -10,7 +10,6 @@ public class Payment extends Invoice {
     public int busId;
     public Timestamp departureDate;
     public List<String> busSeat;
-
     @NonNull
     @Override
     public String toString() {

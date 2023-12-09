@@ -3,6 +3,8 @@ package com.naufalRusydaJBusRD.jbus_android;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Layout;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,8 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.LayoutInflaterCompat;
 
 import com.naufalRusydaJBusRD.jbus_android.model.Bus;
+import com.naufalRusydaJBusRD.jbus_android.model.Station;
 import com.naufalRusydaJBusRD.jbus_android.request.BaseApiService;
 import com.naufalRusydaJBusRD.jbus_android.request.UtilsApi;
 
@@ -36,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button[] btns;
     private int currentPage = 0;
-    private final int pageSize = 12; // kalian dapat bereksperimen dengan field ini
+    private final int pageSize = 8; // kalian dapat bereksperimen dengan field ini
     private int listSize;
     private int noOfPages;
     private List<Bus> listBus = new ArrayList<>();
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView busListView = null;
     private HorizontalScrollView pageScroll = null;
     private BaseApiService apiService;
-
+    public Bus detailedBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     // Handle the list of buses obtained from the API
                     listBus = response.body();
+                    goToPage(currentPage);
+                    buttonListener();
                 } else {
                     Toast.makeText(MainActivity.this, "Application error " + response.code(), Toast.LENGTH_SHORT).show();
                 }
@@ -213,6 +219,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class BusArrayAdapter extends ArrayAdapter<Bus> {
+        private TextView departureTextView;
+        private TextView arrivalTextView;
+        private Bus detailedBus;
+
 
         public BusArrayAdapter(Context context, List<Bus> objects) {
             super(context, 0, objects);
@@ -220,6 +230,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            detailedBus = getItem(position);
+
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.bus_view, parent, false);
             }
@@ -228,7 +240,12 @@ public class MainActivity extends AppCompatActivity {
             Bus bus = getItem(position);
             busNameTextView.setText(bus.name);
 
-            busNameTextView.setOnClickListener(v -> {
+            View mainLayout = convertView.findViewById(R.id.main_layout);
+
+            TextView departureTextView = convertView.findViewById(R.id.main_departure);
+            TextView arrivalTextView = convertView.findViewById(R.id.main_arrival);
+
+            mainLayout.setOnClickListener(v -> {
                 Bus selectedBus = getItem(position);
                 if (selectedBus != null) {
                     // Navigate to BusDetailActivity with the selected bus ID
@@ -238,8 +255,49 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            apiService = UtilsApi.getApiService();
+
+            Call<Bus> call = apiService.getBusbyId(detailedBus.id);
+            call.enqueue(new Callback<Bus>() {
+                @Override
+                public void onResponse(Call<Bus> call, Response<Bus> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        detailedBus = response.body();
+                        // Update UI with detailed bus information
+                        if (detailedBus != null) {
+                            // Format the Station objects into readable strings
+                            String departureText = formatStationText(detailedBus.departure);
+                            departureTextView.setText(departureText);
+
+                            String arrivalText = formatStationText(detailedBus.arrival);
+                            arrivalTextView.setText(arrivalText);
+
+                        }                    } else {
+                        Toast.makeText(MainActivity.this, "Failed to get bus details", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Bus> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "Problem with the server", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             return convertView;
         }
+
+        private String formatStationText (Station station){
+            if (station != null) {
+                // Format the Station information into a readable string
+                return station.stationName + " - " + station.city;
+            } else {
+                // Return a more informative message
+                return "Station information unavailable";
+            }
+        }
+
+
     }
+
 
 }

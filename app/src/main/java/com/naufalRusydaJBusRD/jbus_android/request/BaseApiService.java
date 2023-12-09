@@ -74,6 +74,9 @@ public interface BaseApiService {
     @GET("bus/{id}")
     Call<Bus> getBusbyId(@Path("id") int id);
 
+    @GET("payment/{id}")
+    Call<Payment> getPaymentById(@Path("id") int id);
+
     @POST("payment/makeBooking")
     Call<BaseResponse<Payment>> makeBooking(
             @Query("buyerId") int buyerId,
@@ -84,12 +87,16 @@ public interface BaseApiService {
     );
 
     @POST("payment/{id}/accept")
-    Call<BaseResponse<Payment>> accept(@Path("id") int id);
+    Call<BaseResponse<Payment>> accept(
+            @Path("id") int id,
+            @Query("loggedAccountId") int loggedAccountId
+            );
 
     @POST("payment/{id}/cancel")
     Call<BaseResponse<Payment>> cancel(@Path("id") int id);
 
     @GET("payment/buyer/{buyerId}")
     Call<List<Payment>> getMyPayments(@Path("buyerId") int buyerId);
+
 
 }

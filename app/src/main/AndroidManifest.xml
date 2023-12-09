@@ -16,6 +16,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".InvoiceActivity"
+            android:exported="false" />
+        <activity
             android:name=".CustomerPaymentActivity"
             android:exported="false" />
         <activity

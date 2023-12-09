@@ -139,8 +139,6 @@ public class AboutMeActivity extends AppCompatActivity {
         // Update the balance in the Account object
         Account loggedAccount = LoginActivity.loggedAccount;
 
-        double newBalance = loggedAccount.balance + amount;
-
         // Do the topup request
         BaseApiService mApiService = UtilsApi.getApiService();
 
@@ -160,8 +158,7 @@ public class AboutMeActivity extends AppCompatActivity {
                 if (res.success) {
                     // Update the balance in the TextView
                     TextView balanceTextView = findViewById(R.id.aboutme_balance);
-                    loggedAccount.balance = newBalance;
-                    balanceTextView.setText(String.valueOf(loggedAccount.balance));
+                    balanceTextView.setText(String.valueOf(res.payload));
 
                     Toast.makeText(AboutMeActivity.this, "Topup berhasil", Toast.LENGTH_SHORT).show();
                 } else {

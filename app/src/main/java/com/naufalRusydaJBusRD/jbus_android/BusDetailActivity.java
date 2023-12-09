@@ -1,7 +1,10 @@
 package com.naufalRusydaJBusRD.jbus_android;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -44,11 +47,19 @@ public class BusDetailActivity extends AppCompatActivity {
     private Spinner scheduleSpinner;
     private Spinner seatSpinner;
     private Button makeBooking;
+    private Context mContext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_detail);
+        // Initialize the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        // Set the title of the ActionBar
+        if (actionBar != null) {
+            actionBar.setTitle("Bus Detail");
+        }
 
         // Extract bus ID from the intent
         int busId = getIntent().getIntExtra("busId", -1);
@@ -60,6 +71,8 @@ public class BusDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Bus ID not found", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity
         }
+        mContext = this;
+
 
         busNameTextView = findViewById(R.id.detail_bus_name);
         capacityTextView = findViewById(R.id.detail_capacity);
@@ -243,6 +256,8 @@ public class BusDetailActivity extends AppCompatActivity {
                     BaseResponse<Payment> bookingResponse = response.body();
                     if (bookingResponse != null && bookingResponse.success) {
                         // Handle the successful booking
+                        Intent intent = new Intent(mContext, CustomerPaymentActivity.class);
+                        startActivity(intent);
                         Toast.makeText(BusDetailActivity.this, "Booking successful", Toast.LENGTH_SHORT).show();
                     } else {
                         // Handle the case when the booking was not successful
@@ -257,7 +272,8 @@ public class BusDetailActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<BaseResponse<Payment>> call, Throwable t) {
                 // Handle the case when the API call failed
-                Toast.makeText(BusDetailActivity.this, "Problem with the server", Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
+                Toast.makeText(BusDetailActivity.this, "2Problem with the server"+ t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

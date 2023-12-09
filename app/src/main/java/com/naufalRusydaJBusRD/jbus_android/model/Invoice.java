@@ -1,8 +1,14 @@
 package com.naufalRusydaJBusRD.jbus_android.model;
 
+import androidx.annotation.NonNull;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
 public class Invoice extends Serializable {
 
     public PaymentStatus status;
+
 
     public enum PaymentStatus {
         /**
@@ -20,4 +26,5 @@ public class Invoice extends Serializable {
          */
         SUCCESS
     }
+
 }
