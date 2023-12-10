@@ -21,11 +21,4 @@
         android:textColor="#173460"
         android:textSize="16dp" />
 
-    <ImageView
-        android:id="@+id/delete_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
-        android:clickable="true"
-        android:src="@drawable/baseline_delete_forever_24" />
 </LinearLayout>

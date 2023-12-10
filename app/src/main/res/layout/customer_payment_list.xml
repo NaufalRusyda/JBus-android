@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/customer_bus_detail"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_centerInParent="false"
@@ -27,6 +28,13 @@
             android:text="Bus Name"
             android:textColor="#173460"
             android:textSize="16dp" />
+
+        <ImageView
+            android:id="@+id/remove_payment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_delete_forever_24"
+            android:visibility="gone" />
 
     </LinearLayout>
 

@@ -29,6 +29,13 @@ public class AboutMeActivity extends AppCompatActivity {
     private Button renterButton2 = null;
     private TextView renterStatus2 = null;
 
+
+    private BaseApiService mApiService;
+    private Context mContext;
+    private TextView usernameTextView;
+    private TextView emailTextView;
+    private TextView balanceTextView;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,10 @@ public class AboutMeActivity extends AppCompatActivity {
             actionBar.setTitle("My Account");
         }
 
+
+        mContext = this;
+        mApiService = UtilsApi.getApiService();
+
         if (LoginActivity.loggedAccount == null) {
             finish();
             Toast.makeText(this, "Anda belum login", Toast.LENGTH_SHORT).show();
@@ -47,9 +58,9 @@ public class AboutMeActivity extends AppCompatActivity {
         }
 
         // Initialize components
-        TextView usernameTextView = findViewById(R.id.aboutme_name);
-        TextView emailTextView = findViewById(R.id.aboutme_email);
-        TextView balanceTextView = findViewById(R.id.aboutme_balance);
+        usernameTextView = findViewById(R.id.aboutme_name);
+        emailTextView = findViewById(R.id.aboutme_email);
+        balanceTextView = findViewById(R.id.aboutme_balance);
 
         // Set the account data
         Account loggedAccount = LoginActivity.loggedAccount;
@@ -108,6 +119,23 @@ public class AboutMeActivity extends AppCompatActivity {
             renterButton.setVisibility(View.VISIBLE);
             renterStatus.setVisibility(View.VISIBLE);
         }
+
+        mApiService.getAccountbyId(LoginActivity.loggedAccount.id).enqueue(new Callback<Account>() {
+            @Override
+            public void onResponse(Call<Account> call, Response<Account> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Account loggedAccount = response.body();
+                    balanceTextView.setText(String.valueOf(loggedAccount.balance));
+                } else {
+                    Toast.makeText(AboutMeActivity.this, "Failed to get bus details", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Account> call, Throwable t) {
+                Toast.makeText(mContext, "Problem with the server", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void moveActivity(Context ctx, Class<?> cls) {

@@ -41,7 +41,7 @@ public class CustomerPaymentActivity extends AppCompatActivity {
     private BaseApiService mApiService;
     private Context mContext;
     private Payment payment;
-    private Double busPrice = 0.0;
+    private TextView balanceTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,12 +56,60 @@ public class CustomerPaymentActivity extends AppCompatActivity {
         mApiService = UtilsApi.getApiService();
 
         Account loggedAccount = LoginActivity.loggedAccount;
+        balanceTextView = findViewById(R.id.cp_balance);
+        updateBalance();
 
         // Initialize the ListView and adapter
         paymentListView = findViewById(R.id.cp_list_view);
         paymentListAdapter = new CustomerPaymentActivity.CPaymentListAdapter(this, new ArrayList<>());
-        paymentListView.setAdapter(paymentListAdapter);
+        updatePaymentList();
+    }
 
+    private void updatePaymentList() {
+        mApiService = UtilsApi.getApiService();
+
+        // Check if loggedAccount is not null before making API calls
+        if (LoginActivity.loggedAccount != null) {
+            // Fetch the list of payments for the logged-in buyer
+            mApiService.getMyPayments(LoginActivity.loggedAccount.id).enqueue(new Callback<List<Payment>>() {
+                @Override
+                public void onResponse(Call<List<Payment>> call, Response<List<Payment>> response) {
+                    if (response.isSuccessful()) {
+                        // Update the adapter with the fetched data
+                        paymentListAdapter.clear();
+                        paymentListAdapter.addAll(response.body());
+                    } else {
+                        Toast.makeText(CustomerPaymentActivity.this, "Failed to fetch payments", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Payment>> call, Throwable t) {
+                    t.printStackTrace();
+                    Toast.makeText(CustomerPaymentActivity.this, "1Problem with the server"+t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        paymentListView.setAdapter(paymentListAdapter);
+    }
+
+    private void updateBalance() {
+        mApiService.getAccountbyId(LoginActivity.loggedAccount.id).enqueue(new Callback<Account>() {
+            @Override
+            public void onResponse(Call<Account> call, Response<Account> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Account loggedAccount = response.body();
+                    balanceTextView.setText(String.valueOf(loggedAccount.balance));
+                } else {
+                    Toast.makeText(CustomerPaymentActivity.this, "Failed to get bus details", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Account> call, Throwable t) {
+                Toast.makeText(mContext, "Problem with the server", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -142,7 +190,44 @@ public class CustomerPaymentActivity extends AppCompatActivity {
             });
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mm:ss");
-            scheduleTextView.setText(dateFormat.format(payment.departureDate.getTime()) + "\t\t" + payment.busSeat + "Status: " + payment.status);
+            scheduleTextView.setText(dateFormat.format(payment.departureDate.getTime()) + "\t\t" + payment.busSeat + " Status: " + payment.status);
+
+            View customerBusLayout = convertView.findViewById(R.id.customer_bus_detail);
+            customerBusLayout.setOnClickListener(v -> {
+                Payment selectedPayment = getItem(position);
+                if (selectedPayment != null) {
+                    // Navigate to BusDetailActivity with the selected bus ID
+                    Intent intent = new Intent(getContext(), BusDetailActivity.class);
+                    intent.putExtra("busId", selectedPayment.busId); // Assuming Bus class has an 'id' field
+                    getContext().startActivity(intent);
+                }
+            });
+
+            ImageView removeButton = convertView.findViewById(R.id.remove_payment);
+            if (payment.status == Invoice.PaymentStatus.FAILED) {
+                removeButton.setVisibility(View.VISIBLE);
+            }
+            removeButton.setOnClickListener(v -> {
+                Payment selectedPayment = getItem(position);
+                if (selectedPayment != null) {
+                    mApiService.removePayment(selectedPayment.id).enqueue(new Callback<BaseResponse<Payment>>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse<Payment>> call, Response<BaseResponse<Payment>> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                updatePaymentList();
+                                Toast.makeText(CustomerPaymentActivity.this, "Remove successful", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(CustomerPaymentActivity.this, "Failed to get bus details", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse<Payment>> call, Throwable t) {
+                            Toast.makeText(mContext, "Problem with the server", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
 
             Button invoiceButton = convertView.findViewById(R.id.cp_invoice);
             invoiceButton.setOnClickListener(v -> {
@@ -164,8 +249,6 @@ public class CustomerPaymentActivity extends AppCompatActivity {
             final View finalConvertView = convertView;
             final Payment curPayment = getItem(finalPosition);
 
-            getBusPrice();
-
             acceptButton.setOnClickListener(new View.OnClickListener() {
                 Account loggedAccount = LoginActivity.loggedAccount;
 
@@ -186,6 +269,7 @@ public class CustomerPaymentActivity extends AppCompatActivity {
                                 acceptButton.setVisibility(View.GONE);
                                 cancelButton.setVisibility(View.VISIBLE);
                                 invoiceButton.setVisibility(View.VISIBLE);
+                                updateBalance();
 
                                 Toast.makeText(CustomerPaymentActivity.this, "Payment accepted successfully", Toast.LENGTH_SHORT).show();
                             } else {
@@ -240,6 +324,8 @@ public class CustomerPaymentActivity extends AppCompatActivity {
                                 Button acceptButton = finalConvertView.findViewById(R.id.cp_accept);
                                 acceptButton.setVisibility(View.GONE);
                                 invoiceButton.setVisibility(View.GONE);
+                                removeButton.setVisibility(View.VISIBLE);
+                                updateBalance();
 
                                 Toast.makeText(CustomerPaymentActivity.this, "Payment cancelled successfully", Toast.LENGTH_SHORT).show();
                             } else {
@@ -258,30 +344,6 @@ public class CustomerPaymentActivity extends AppCompatActivity {
             return convertView;
         }
 
-    }
-
-    private void getBusPrice() {
-        mApiService.getBusbyId(payment.busId).enqueue(new Callback<Bus>() {
-            @Override
-            public void onResponse(Call<Bus> call, Response<Bus> response) {
-                if (response.isSuccessful()) {
-                    Bus bus = response.body();
-                    // Fetch the bus price
-                    busPrice = bus.price.price;
-                    // Update your UI or perform any actions with the busPrice
-
-                } else {
-                    // Handle error
-                    Toast.makeText(mContext, "Failed to fetch schedule information", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Bus> call, Throwable t) {
-                // Handle failure
-                Toast.makeText(mContext, "Problem with the server", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 }

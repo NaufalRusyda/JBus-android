@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.LayoutInflaterCompat;
 
 import com.naufalRusydaJBusRD.jbus_android.model.Bus;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         Spinner departureSpinner = dialogView.findViewById(R.id.filter_departure);
         Spinner arrivalSpinner = dialogView.findViewById(R.id.filter_arrival);
         Button saveFilter = dialogView.findViewById(R.id.buttonSaveFilter);
+        Button removeFilter = dialogView.findViewById(R.id.buttonRemoveFilter);
         AdapterView.OnItemSelectedListener deptOISL = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -153,16 +155,15 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(mContext, "Filter saved", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
+
+        removeFilter.setOnClickListener(t -> {
+            onResume();
+            Toast.makeText(mContext, "Filter removed", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
         dialog.setView(dialogView);
         dialog.setCancelable(true);
         dialog.show();
-    }
-    private List<String> getStationNames() {
-        List<String> stationNames = new ArrayList<>();
-        for (Station station : stationList) {
-            stationNames.add(station.stationName);
-        }
-        return stationNames;
     }
 
     private void updateBus() {
@@ -265,7 +266,44 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar_menu, menu);
+
+        // Get the SearchView and set up search functionality
+        MenuItem searchItem = menu.findItem(R.id.search_button);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Handle the query submission if needed
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Filter the list based on the user's input
+                filterBuses(newText);
+                return true;
+            }
+        });
+
         return true;
+    }
+
+    private void filterBuses(String query) {
+        List<Bus> filteredList = new ArrayList<>();
+        for (Bus bus : listBus) {
+            // Check if the bus name, departure city, or arrival city contains the query
+            if (bus.name.toLowerCase().contains(query.toLowerCase()) ||
+                    bus.departure.stationName.toLowerCase().contains(query.toLowerCase()) ||
+                    bus.departure.city.toString().toLowerCase().contains(query.toLowerCase()) ||
+                    bus.arrival.stationName.toLowerCase().contains(query.toLowerCase()) ||
+                    bus.arrival.city.toString().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(bus);
+            }
+        }
+
+        // Update the displayed buses with the filtered list
+        goToPage(currentPage);
+        viewPaginatedList(filteredList, currentPage);
     }
 
     @Override

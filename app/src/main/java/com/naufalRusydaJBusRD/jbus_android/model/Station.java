@@ -10,6 +10,6 @@ public class Station extends Serializable {
     @NonNull
     @Override
     public String toString() {
-        return stationName;
+        return stationName + " - " + city;
     }
 }

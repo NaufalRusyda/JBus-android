@@ -5,6 +5,7 @@ import com.naufalRusydaJBusRD.jbus_android.model.BaseResponse;
 import com.naufalRusydaJBusRD.jbus_android.model.Bus;
 import com.naufalRusydaJBusRD.jbus_android.model.BusType;
 import com.naufalRusydaJBusRD.jbus_android.model.Facility;
+import com.naufalRusydaJBusRD.jbus_android.model.Invoice;
 import com.naufalRusydaJBusRD.jbus_android.model.Payment;
 import com.naufalRusydaJBusRD.jbus_android.model.Renter;
 import com.naufalRusydaJBusRD.jbus_android.model.Station;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -104,5 +106,6 @@ public interface BaseApiService {
             @Query("arrivalId") int arrivalId
             );
 
-
+    @DELETE("payment/{id}/remove")
+    Call<BaseResponse<Payment>> removePayment(@Path("id") int id);
 }

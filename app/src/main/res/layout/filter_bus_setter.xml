@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="@color/white"
     android:orientation="vertical"
     android:padding="16dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,17 +15,11 @@
         android:paddingHorizontal="3dp">
 
         <TextView
-            android:layout_width="96dp"
+            android:layout_width="65dp"
             android:layout_height="wrap_content"
             android:text="Departure"
             android:textColor="@color/black"
-            android:textSize="18dp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_home_24"
-            app:tint="@color/black" />
+            android:textSize="14sp" />
 
         <Spinner
             android:id="@+id/filter_departure"
@@ -42,17 +36,11 @@
         android:paddingHorizontal="3dp">
 
         <TextView
-            android:layout_width="96dp"
+            android:layout_width="65dp"
             android:layout_height="wrap_content"
             android:text="Arrival"
             android:textColor="@color/black"
-            android:textSize="18dp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_arrow_forward_24"
-            app:tint="@color/black" />
+            android:textSize="14sp" />
 
         <Spinner
             android:id="@+id/filter_arrival"
@@ -60,14 +48,34 @@
             android:layout_height="48dp" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/buttonSaveFilter"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:enabled="true"
-        android:text="Save"
-        android:textColor="@color/black"
-        android:textAllCaps="false" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonRemoveFilter"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:backgroundTint="#83A2FF"
+            android:enabled="true"
+            android:text="Remove filter"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:strokeColor="#E62F2F" />
+
+        <Button
+            android:id="@+id/buttonSaveFilter"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="130dp"
+            android:backgroundTint="#83A2FF"
+            android:enabled="true"
+            android:text="Save"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+    </LinearLayout>
 </LinearLayout>

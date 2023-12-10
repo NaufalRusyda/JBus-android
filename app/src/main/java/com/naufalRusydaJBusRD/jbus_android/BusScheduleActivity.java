@@ -279,17 +279,6 @@ public class BusScheduleActivity extends AppCompatActivity {
             TextView scheduleTextView = convertView.findViewById(R.id.schedule_list);
             scheduleTextView.setText(s.toString());
 
-            ImageView deleteIconImageView = convertView.findViewById(R.id.delete_icon);
-            deleteIconImageView.setTag(position); // Set a tag to identify the position
-
-            deleteIconImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Retrieve the selected bus
-
-                }
-            });
-
             return convertView;
         }
     }
