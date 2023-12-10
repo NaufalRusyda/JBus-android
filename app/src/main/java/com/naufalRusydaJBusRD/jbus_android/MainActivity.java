@@ -3,8 +3,6 @@ package com.naufalRusydaJBusRD.jbus_android;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -28,32 +24,34 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.view.LayoutInflaterCompat;
 
 import com.naufalRusydaJBusRD.jbus_android.model.Bus;
 import com.naufalRusydaJBusRD.jbus_android.model.BusType;
-import com.naufalRusydaJBusRD.jbus_android.model.Facility;
 import com.naufalRusydaJBusRD.jbus_android.model.Station;
 import com.naufalRusydaJBusRD.jbus_android.request.BaseApiService;
 import com.naufalRusydaJBusRD.jbus_android.request.UtilsApi;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * MainActivity class represents the main activity of the JBus Android application.
+ *
+ * @author Naufal Rusyda Santosa
+ * @version 1.0
+ */
 public class MainActivity extends AppCompatActivity {
     private BusType[] busType = BusType.values();
     private List<Station> stationList = new ArrayList<>();
     private BaseApiService mApiService;
     private Context mContext;
-
     private Button[] btns;
     private int currentPage = 0;
-    private final int pageSize = 8; // kalian dapat bereksperimen dengan field ini
+    private final int pageSize = 8;
     private int listSize;
     private int noOfPages;
     private List<Bus> listBus = new ArrayList<>();
@@ -71,21 +69,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // hubungkan komponen dengan ID nya
+        // Connect components with their IDs
         prevButton = findViewById(R.id.prev_page);
         nextButton = findViewById(R.id.next_page);
         pageScroll = findViewById(R.id.page_number_scroll);
         busListView = findViewById(R.id.bus_list);
         filterBus = findViewById(R.id.main_filter);
         mContext = this;
-        List<Station> stationList = new ArrayList<>();
-        filterBus.setOnClickListener(v->showDialog());
+        filterBus.setOnClickListener(v -> showDialog());
 
         listBus();
-
     }
 
-    protected void showDialog(){
+    /**
+     * Show a dialog to filter buses based on departure and arrival stations.
+     */
+    protected void showDialog() {
         AlertDialog dialog = new AlertDialog.Builder(mContext).create();
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.filter_bus_setter, null);
@@ -93,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
         Spinner arrivalSpinner = dialogView.findViewById(R.id.filter_arrival);
         Button saveFilter = dialogView.findViewById(R.id.buttonSaveFilter);
         Button removeFilter = dialogView.findViewById(R.id.buttonRemoveFilter);
+
+        // Spinner item selection listeners
         AdapterView.OnItemSelectedListener deptOISL = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -140,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(mContext, "Spinners not initialized properly", Toast.LENGTH_SHORT).show();
                     }
-
                 }
             }
 
@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Save and remove filter button listeners
         saveFilter.setOnClickListener(t -> {
             updateBus();
             Toast.makeText(mContext, "Filter saved", Toast.LENGTH_SHORT).show();
@@ -161,11 +162,15 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(mContext, "Filter removed", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
+
         dialog.setView(dialogView);
         dialog.setCancelable(true);
         dialog.show();
     }
 
+    /**
+     * Update the list of buses based on the selected departure and arrival stations.
+     */
     private void updateBus() {
         apiService = UtilsApi.getApiService();
 
@@ -187,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Bus>> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Problem with the server", Toast.LENGTH_SHORT).show();
-
             }
         });
     }
@@ -216,13 +220,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Bus>> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Problem with the server", Toast.LENGTH_SHORT).show();
-
             }
         });
     }
 
+    /**
+     * Set listeners for the previous and next buttons.
+     */
     private void buttonListener() {
-        // listener untuk button prev dan button
+        // listener for prev and next buttons
         prevButton.setOnClickListener(v -> {
             currentPage = currentPage != 0 ? currentPage - 1 : 0;
             goToPage(currentPage);
@@ -231,10 +237,7 @@ public class MainActivity extends AppCompatActivity {
             currentPage = currentPage != noOfPages - 1 ? currentPage + 1 : currentPage;
             goToPage(currentPage);
         });
-    }
-
-    private void listBus() {
-
+    }private void listBus() {
         apiService = UtilsApi.getApiService();
 
         // Make the API request to get all buses
@@ -257,7 +260,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Bus>> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Problem with the server", Toast.LENGTH_SHORT).show();
-
             }
         });
     }
@@ -288,6 +290,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Filters the list of buses based on the user's input query.
+     *
+     * @param query The user's input query.
+     */
     private void filterBuses(String query) {
         List<Bus> filteredList = new ArrayList<>();
         for (Bus bus : listBus) {
@@ -323,11 +330,20 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Moves to the specified activity.
+     *
+     * @param ctx The context.
+     * @param cls The class of the target activity.
+     */
     private void moveActivity(Context ctx, Class<?> cls) {
         Intent intent = new Intent(ctx, cls);
         startActivity(intent);
     }
 
+    /**
+     * Sets up the pagination footer with page buttons.
+     */
     private void paginationFooter() {
         int val = listSize % pageSize;
         val = val == 0 ? 0 : 1;
@@ -341,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
             btns[i] = new Button(this);
             btns[i].setBackgroundColor(getResources().getColor(android.R.color.transparent));
             btns[i].setText("" + (i + 1));
-            // ganti dengan warna yang kalian mau
+            // change with the color you prefer
             btns[i].setTextColor(getResources().getColor(R.color.black));
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(100, 100);
             ll.addView(btns[i], lp);
@@ -353,6 +369,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Navigates to the specified page and updates the displayed list.
+     *
+     * @param index The index of the target page.
+     */
     private void goToPage(int index) {
         for (int i = 0; i < noOfPages; i++) {
             if (i == index) {
@@ -367,11 +388,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Scrolls to the specified item within the pagination horizontal scroll view.
+     *
+     * @param item The target item (button) to scroll to.
+     */
     private void scrollToItem(Button item) {
         int scrollX = item.getLeft() - (pageScroll.getWidth() - item.getWidth()) / 2;
         pageScroll.smoothScrollTo(scrollX, 0);
     }
 
+    /**
+     * Updates the displayed list of buses based on the given list and current page.
+     *
+     * @param listBus The list of buses to be displayed.
+     * @param page    The current page index.
+     */
     private void viewPaginatedList(List<Bus> listBus, int page) {
         int startIndex = page * pageSize;
         int endIndex = Math.min(startIndex + pageSize, listBus.size());
@@ -381,11 +413,13 @@ public class MainActivity extends AppCompatActivity {
         busListView.setAdapter(busArrayAdapter);
     }
 
+    /**
+     * Custom ArrayAdapter for displaying Bus objects in the ListView.
+     */
     public class BusArrayAdapter extends ArrayAdapter<Bus> {
         private TextView departureTextView;
         private TextView arrivalTextView;
         private Bus detailedBus;
-
 
         public BusArrayAdapter(Context context, List<Bus> objects) {
             super(context, 0, objects);
@@ -434,8 +468,8 @@ public class MainActivity extends AppCompatActivity {
 
                             String arrivalText = formatStationText(detailedBus.arrival);
                             arrivalTextView.setText(arrivalText);
-
-                        }                    } else {
+                        }
+                    } else {
                         Toast.makeText(MainActivity.this, "Failed to get bus details", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -449,18 +483,18 @@ public class MainActivity extends AppCompatActivity {
             return convertView;
         }
 
-        private String formatStationText (Station station){
+        /**
+         * Formats the Station information into a readable string.
+         *
+         * @param station The Station object.
+         * @return A formatted string representing the station information.
+         */
+        private String formatStationText(Station station) {
             if (station != null) {
-                // Format the Station information into a readable string
                 return station.stationName + " - " + station.city;
             } else {
-                // Return a more informative message
                 return "Station information unavailable";
             }
         }
-
-
     }
-
-
 }

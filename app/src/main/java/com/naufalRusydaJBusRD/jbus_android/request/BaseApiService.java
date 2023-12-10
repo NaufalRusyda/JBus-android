@@ -19,6 +19,12 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+/**
+ * The BaseApiService interface defines the API endpoints for the JBus Android application.
+ *
+ * @author Naufal Rusyda Santosa
+ * @version 1.0
+ */
 public interface BaseApiService {
     @GET("account/{id}")
     Call<Account> getAccountbyId (@Path("id") int id);

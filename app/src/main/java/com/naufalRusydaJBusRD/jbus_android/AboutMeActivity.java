@@ -22,51 +22,74 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Activity to display information about the user's account and perform actions like top-up and registration.
+ *
+ * @author Naufal Rusyda Santosa
+ * @version 1.0
+ */
 public class AboutMeActivity extends AppCompatActivity {
-    private Button topupButton = null;
-    private Button renterButton = null;
-    private TextView renterStatus = null;
-    private Button renterButton2 = null;
-    private TextView renterStatus2 = null;
 
-
+    // UI Components
+    private Button topupButton;
+    private Button renterButton;
+    private TextView renterStatus;
+    private Button renterButton2;
+    private TextView renterStatus2;
     private BaseApiService mApiService;
     private Context mContext;
     private TextView usernameTextView;
     private TextView emailTextView;
     private TextView balanceTextView;
+    private TextView companyNameTextView;
+    private TextView companyAddressTextView;
+    private TextView phoneNumberTextView;
+    private Account loggedAccount;
+    private View companyView;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_me);
-        ActionBar actionBar = getSupportActionBar();
+
         // Set the title of the ActionBar
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("My Account");
         }
 
-
         mContext = this;
         mApiService = UtilsApi.getApiService();
 
-        if (LoginActivity.loggedAccount == null) {
+        // Check if the user is logged in
+        loggedAccount = LoginActivity.loggedAccount;
+        if (loggedAccount == null) {
             finish();
-            Toast.makeText(this, "Anda belum login", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You are not logged in", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Initialize components
+        // Initialize UI components
         usernameTextView = findViewById(R.id.aboutme_name);
         emailTextView = findViewById(R.id.aboutme_email);
         balanceTextView = findViewById(R.id.aboutme_balance);
 
+        companyView = findViewById(R.id.company_detail);
+        companyNameTextView = findViewById(R.id.aboutme_company_name);
+        companyAddressTextView = findViewById(R.id.aboutme_company_address);
+        phoneNumberTextView = findViewById(R.id.aboutme_company_phone);
+
         // Set the account data
-        Account loggedAccount = LoginActivity.loggedAccount;
         usernameTextView.setText(loggedAccount.name);
         emailTextView.setText(loggedAccount.email);
         balanceTextView.setText(String.valueOf(loggedAccount.balance));
+
+        if (LoginActivity.loggedAccount.company != null) {
+            companyNameTextView.setText(loggedAccount.company.companyName);
+            companyAddressTextView.setText(loggedAccount.company.address);
+            phoneNumberTextView.setText(String.valueOf(loggedAccount.company.phoneNumber));
+        }
 
         // Update the initial letter in the circle with the first letter of the name
         TextView initialTextView = findViewById(R.id.initial);
@@ -74,60 +97,70 @@ public class AboutMeActivity extends AppCompatActivity {
             initialTextView.setText(String.valueOf(loggedAccount.name.charAt(0)).toUpperCase());
         }
 
+        // Initialize buttons and status text views
         topupButton = findViewById(R.id.topup);
-        topupButton.setOnClickListener(v -> handleTopup(v));
+        topupButton.setOnClickListener(v -> handleTopUp(v));
 
         renterButton = findViewById(R.id.renter_button);
         renterStatus = findViewById(R.id.renter_status);
         renterButton2 = findViewById(R.id.renter_button2);
         renterStatus2 = findViewById(R.id.renter_status2);
 
+        // Toggle visibility based on company association
         if (LoginActivity.loggedAccount.company != null) {
             renterButton2.setVisibility(View.VISIBLE);
             renterStatus2.setVisibility(View.VISIBLE);
             renterButton.setVisibility(View.GONE);
             renterStatus.setVisibility(View.GONE);
+            companyView.setVisibility(View.VISIBLE);
         } else {
             renterButton2.setVisibility(View.GONE);
             renterStatus2.setVisibility(View.GONE);
             renterButton.setVisibility(View.VISIBLE);
             renterStatus.setVisibility(View.VISIBLE);
+            companyView.setVisibility(View.GONE);
         }
 
+        // Set click listeners for renter buttons
         renterButton.setOnClickListener(v -> {
             moveActivity(this, RegisterRenterActivity.class);
-            viewToast(this, "Register company anda");
-        });
-        renterButton2.setOnClickListener(v -> {
-            moveActivity(this, ManageBusActivity.class);
-            viewToast(this, "Manage bus anda");
+            viewToast(this, "Register your company");
         });
 
+        renterButton2.setOnClickListener(v -> {
+            moveActivity(this, ManageBusActivity.class);
+            viewToast(this, "Manage your buses");
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Toggle visibility based on company association
         if (LoginActivity.loggedAccount.company != null) {
             renterButton2.setVisibility(View.VISIBLE);
             renterStatus2.setVisibility(View.VISIBLE);
             renterButton.setVisibility(View.GONE);
             renterStatus.setVisibility(View.GONE);
+            companyView.setVisibility(View.VISIBLE);
         } else {
             renterButton2.setVisibility(View.GONE);
             renterStatus2.setVisibility(View.GONE);
             renterButton.setVisibility(View.VISIBLE);
             renterStatus.setVisibility(View.VISIBLE);
+            companyView.setVisibility(View.GONE);
         }
 
-        mApiService.getAccountbyId(LoginActivity.loggedAccount.id).enqueue(new Callback<Account>() {
+        // Fetch updated account details from the server
+        mApiService.getAccountbyId(loggedAccount.id).enqueue(new Callback<Account>() {
             @Override
             public void onResponse(Call<Account> call, Response<Account> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Account loggedAccount = response.body();
-                    balanceTextView.setText(String.valueOf(loggedAccount.balance));
+                    balanceTextView.setText("IDR " + String.valueOf(loggedAccount.balance));
                 } else {
-                    Toast.makeText(AboutMeActivity.this, "Failed to get bus details", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AboutMeActivity.this, "Failed to get account details", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -138,16 +171,19 @@ public class AboutMeActivity extends AppCompatActivity {
         });
     }
 
+    // Method to navigate to another activity
     private void moveActivity(Context ctx, Class<?> cls) {
         Intent intent = new Intent(ctx, cls);
         startActivity(intent);
     }
 
+    // Method to display a short toast message
     private void viewToast(Context ctx, String message) {
         Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show();
     }
 
-    public void handleTopup(View view) {
+    // Method to handle the top-up action
+    public void handleTopUp(View view) {
         // Get the amount from the EditText
         EditText amountEditText = findViewById(R.id.topup_amount);
         String amountStr = amountEditText.getText().toString();
@@ -160,20 +196,11 @@ public class AboutMeActivity extends AppCompatActivity {
         double amount = Double.parseDouble(amountStr);
 
         if (amount <= 0) {
-            Toast.makeText(this, "Topup amount must be greater than 0", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Top-up amount must be greater than 0", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Update the balance in the Account object
-        Account loggedAccount = LoginActivity.loggedAccount;
-
-        // Do the topup request
-        BaseApiService mApiService = UtilsApi.getApiService();
-
-        // Get the logged in user ID
-        int id = loggedAccount.id;
-
-        mApiService.topUp(id, amount).enqueue(new Callback<BaseResponse<Double>>() {
+        mApiService.topUp(loggedAccount.id, amount).enqueue(new Callback<BaseResponse<Double>>() {
             @Override
             public void onResponse(Call<BaseResponse<Double>> call, Response<BaseResponse<Double>> response) {
                 if (!response.isSuccessful()) {
@@ -185,10 +212,9 @@ public class AboutMeActivity extends AppCompatActivity {
 
                 if (res.success) {
                     // Update the balance in the TextView
-                    TextView balanceTextView = findViewById(R.id.aboutme_balance);
                     balanceTextView.setText(String.valueOf(res.payload));
 
-                    Toast.makeText(AboutMeActivity.this, "Topup berhasil", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AboutMeActivity.this, "Top-up successful", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(AboutMeActivity.this, res.message, Toast.LENGTH_SHORT).show();
                 }
@@ -200,5 +226,4 @@ public class AboutMeActivity extends AppCompatActivity {
             }
         });
     }
-
 }

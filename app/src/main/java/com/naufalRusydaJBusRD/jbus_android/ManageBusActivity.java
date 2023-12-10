@@ -31,19 +31,26 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Activity for managing buses.
+ *
+ * @author Naufal Rusyda Santosa
+ * @version 1.0
+ */
 public class ManageBusActivity extends AppCompatActivity {
     private ListView busListView;
     private BusListAdapter busListAdapter;
     private BaseApiService mApiService;
     private Context mContext;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_bus);
+
         // Initialize the ActionBar
         ActionBar actionBar = getSupportActionBar();
+
         // Set the title of the ActionBar
         if (actionBar != null) {
             actionBar.setTitle("Manage Bus");
@@ -55,7 +62,6 @@ public class ManageBusActivity extends AppCompatActivity {
         busListView = findViewById(R.id.bus_list_view);
         busListAdapter = new BusListAdapter(this, new ArrayList<>());
         busListView.setAdapter(busListAdapter);
-
     }
 
     @Override
@@ -69,7 +75,7 @@ public class ManageBusActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.add_button) {
-            // User clicked the "User Button"
+            // User clicked the "Add Button"
             moveActivity(this, AddBusActivity.class);
             return true;
         }
@@ -77,6 +83,12 @@ public class ManageBusActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Move to another activity.
+     *
+     * @param ctx The context from which the activity is started.
+     * @param cls The class of the activity to start.
+     */
     private void moveActivity(Context ctx, Class<?> cls) {
         Intent intent = new Intent(ctx, cls);
         startActivity(intent);
@@ -111,8 +123,10 @@ public class ManageBusActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Custom ArrayAdapter for displaying Bus objects in a ListView.
+     */
     public class BusListAdapter extends ArrayAdapter<Bus> {
-
         private Context mContext;
 
         public BusListAdapter(Context context, List<Bus> buses) {
@@ -150,11 +164,5 @@ public class ManageBusActivity extends AppCompatActivity {
 
             return convertView;
         }
-
-
-
     }
-
-
-
 }

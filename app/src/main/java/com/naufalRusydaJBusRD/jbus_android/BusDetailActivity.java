@@ -15,7 +15,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.naufalRusydaJBusRD.jbus_android.model.Account;
 import com.naufalRusydaJBusRD.jbus_android.model.BaseResponse;
 import com.naufalRusydaJBusRD.jbus_android.model.Bus;
 import com.naufalRusydaJBusRD.jbus_android.model.Payment;
@@ -33,10 +32,16 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+/**
+ * Activity to display detailed information about a bus and make bookings.
+ *
+ * @author Naufal Rusyda Santosa
+ * @version 1.0
+ */
 public class BusDetailActivity extends AppCompatActivity {
     private BaseApiService apiService;
     private Bus detailedBus;
-
     private TextView busNameTextView;
     private TextView capacityTextView;
     private TextView priceTextView;
@@ -49,14 +54,13 @@ public class BusDetailActivity extends AppCompatActivity {
     private Button makeBooking;
     private Context mContext;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_detail);
+
         // Initialize the ActionBar
         ActionBar actionBar = getSupportActionBar();
-        // Set the title of the ActionBar
         if (actionBar != null) {
             actionBar.setTitle("Bus Detail");
         }
@@ -71,8 +75,8 @@ public class BusDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Bus ID not found", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity
         }
-        mContext = this;
 
+        mContext = this;
 
         busNameTextView = findViewById(R.id.detail_bus_name);
         capacityTextView = findViewById(R.id.detail_capacity);
@@ -102,9 +106,6 @@ public class BusDetailActivity extends AppCompatActivity {
             }
         });
 
-        makeBooking = findViewById(R.id.booking_button);
-
-        // Set a click listener for the "Booking" button
         makeBooking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,17 +136,16 @@ public class BusDetailActivity extends AppCompatActivity {
             }
         });
     }
+
     private void updateUIComponents() {
         // Check if detailedBus is not null before updating UI
         if (detailedBus != null) {
-
-
             // Update UI components with detailed bus information
             busNameTextView.setText(detailedBus.name);
             capacityTextView.setText(String.valueOf(detailedBus.capacity));
 
             // Format the Price object into a readable string
-            String priceText =  "" + detailedBus.price.price;
+            String priceText = "" + detailedBus.price.price;
             priceTextView.setText(priceText);
 
             // Convert the list of facilities into a readable string
@@ -273,7 +273,7 @@ public class BusDetailActivity extends AppCompatActivity {
             public void onFailure(Call<BaseResponse<Payment>> call, Throwable t) {
                 // Handle the case when the API call failed
                 t.printStackTrace();
-                Toast.makeText(BusDetailActivity.this, "2Problem with the server"+ t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(BusDetailActivity.this, "Problem with the server" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -6,7 +6,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +13,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.naufalRusydaJBusRD.jbus_android.model.Account;
 import com.naufalRusydaJBusRD.jbus_android.model.BaseResponse;
 import com.naufalRusydaJBusRD.jbus_android.model.Bus;
 import com.naufalRusydaJBusRD.jbus_android.model.Schedule;
@@ -36,6 +33,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Activity to manage and display bus schedules.
+ *
+ * @author Naufal Rusyda Santosa
+ * @version 1.0
+ */
 public class BusScheduleActivity extends AppCompatActivity {
     private Spinner yearSpinner;
     private Spinner monthSpinner;
@@ -46,28 +49,29 @@ public class BusScheduleActivity extends AppCompatActivity {
     private int busId;
     private ListView scheduleList;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_schedule);
+
         // Initialize the ActionBar
         ActionBar actionBar = getSupportActionBar();
-        // Set the title of the ActionBar
         if (actionBar != null) {
             actionBar.setTitle("Bus Schedule");
         }
+
         // Retrieve the bus ID from the intent
         busId = getIntent().getIntExtra("busId", 0);
 
+        // Check if the user is logged in
         if (LoginActivity.loggedAccount == null) {
             finish();
             Toast.makeText(this, "Anda belum login", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        scheduleList = this.findViewById(R.id.schedule_list_view);
+        // Set up the schedule list view
+        scheduleList = findViewById(R.id.schedule_list_view);
         showSchedule();
 
         // Initialize the spinners
@@ -108,15 +112,14 @@ public class BusScheduleActivity extends AppCompatActivity {
         ArrayAdapter<String> hourAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, hourValues);
         hourSpinner.setAdapter(hourAdapter);
 
+        // Set up the "Add Schedule" button
         Button addScheduleButton = findViewById(R.id.add_schedule_button);
-
         addScheduleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleAddSchedule();
             }
         });
-
     }
 
     // Update date spinner based on selected month
@@ -150,6 +153,7 @@ public class BusScheduleActivity extends AppCompatActivity {
         return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
     }
 
+    // Get the numeric representation of a month name
     private String getMonthNumber(String monthName) {
         switch (monthName) {
             case "JANUARY":
@@ -181,11 +185,11 @@ public class BusScheduleActivity extends AppCompatActivity {
         }
     }
 
-
+    // Get the formatted time based on spinner values
     private String getFormattedTime() {
         // Get the selected year, month, date, and hour from the spinners
         String year = SpinnerUtils.getSelectedItem(yearSpinner);
-        String month = getMonthNumber(SpinnerUtils.getSelectedItem(monthSpinner)); // Use the new method
+        String month = getMonthNumber(SpinnerUtils.getSelectedItem(monthSpinner));
         String date = SpinnerUtils.getSelectedItem(dateSpinner);
         String hour = SpinnerUtils.getSelectedItem(hourSpinner);
 
@@ -193,7 +197,7 @@ public class BusScheduleActivity extends AppCompatActivity {
         return year + "-" + month + "-" + date + " " + hour + ":00:00";
     }
 
-
+    // Handle the addition of a new schedule
     private void handleAddSchedule() {
         // Get the formatted time from the spinners
         String time = getFormattedTime();
@@ -231,12 +235,14 @@ public class BusScheduleActivity extends AppCompatActivity {
         });
     }
 
+    // Utility class for Spinner operations
     public static class SpinnerUtils {
         public static <T> T getSelectedItem(Spinner spinner) {
             return (T) spinner.getSelectedItem();
         }
     }
 
+    // Show the schedule for the selected bus
     protected void showSchedule() {
         mContext = this;
         apiService = UtilsApi.getApiService();
@@ -255,11 +261,14 @@ public class BusScheduleActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Bus> call, Throwable t) {
-
+                // Handle failure if needed
             }
         });
     }
 
+    /**
+     * Custom ArrayAdapter for displaying bus schedules in a ListView.
+     */
     public class ScheduleListAdapter extends ArrayAdapter<Schedule> {
 
         public ScheduleListAdapter(Context context, List<Schedule> schedule) {
@@ -282,5 +291,4 @@ public class BusScheduleActivity extends AppCompatActivity {
             return convertView;
         }
     }
-
 }
